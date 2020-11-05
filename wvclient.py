@@ -15,7 +15,6 @@ import license_protocol_pb2
 
 
 class PSSH:
-
 	def __init__(self):
 
 		self.path=None
@@ -32,14 +31,10 @@ class PSSH:
 			self.content=open(self.path,'r').read()
 		else: # read data
 			self.content=object
-
 		try:
 			offset=self.content.rfind('pssh')
-
 			self.length= ord(self.content[offset-1])
-
 			self.data =self.content[offset-4:offset+self.length-4]
-
 			self.kid=self.content[offset-4+2+32:offset-4+32+2+16].encode('hex')
 
 		except Exception as e:
