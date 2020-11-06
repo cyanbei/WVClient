@@ -1,3 +1,6 @@
+#coding: utf-8
+__author__ = 'T3rry'
+
 import re
 import json
 import base64
@@ -12,7 +15,6 @@ from Crypto.PublicKey import RSA
 from Crypto.Hash import CMAC
 from Crypto.Cipher import AES
 import license_protocol_pb2
-
 
 class PSSH:
 	def __init__(self):
@@ -56,8 +58,7 @@ class WidevineCDM:
 		sock.send(pssh_data)
 		recvData=sock.recv(10240)
 		self.license_request_data=recvData
-
-		#print 'License request data: \n',recvData.encode('hex')
+		
 		return recvData
 
 	def getContentKey(self,lic_request_data):
@@ -87,8 +88,7 @@ class WidevineCDM:
 		mode = AES.MODE_CBC
 		cryptos = AES.new(encryptKey, mode, keyIv)
 		dkey = cryptos.decrypt(keyData)
-		print "		KID:",keyId,"KEY:",dkey.encode('hex')
-
+		print "KID:",keyId,"KEY:",dkey.encode('hex')
 
 class  Downloader(object):
 	def __init__(self):
@@ -96,18 +96,16 @@ class  Downloader(object):
 		self.proxies ={}
 		self.header={'Cookie':  '','Range':'bytes=0-4096'}
 
-
 	def download(self,url):
 		resp=requests.get(url,headers=self.header,proxies=self.proxies)
 		return  resp.content		
 
-
+	
+####widevine test link: https://bitmovin.com/demos/drm 
 downloader=Downloader()
 initData=downloader.download('https://bitmovin-a.akamaihd.net/content/art-of-motion_drm/video/1080_4800000/cenc_dash/init.mp4')
-
 pssh=PSSH()
 pssh.parse(initData,type=0) 
-
 cdm=WidevineCDM('https://widevine-proxy.appspot.com/proxy')      #
 data=cdm.generateRequestData(pssh.data)
 cdm=cdm.getContentKey(data)
