@@ -58,7 +58,6 @@ class WidevineCDM:
 		sock.send(pssh_data)
 		recvData=sock.recv(10240)
 		self.license_request_data=recvData
-		
 		return recvData
 
 	def getContentKey(self,lic_request_data):
